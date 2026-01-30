@@ -1,8 +1,17 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <AboutComponents />
   </div>
 </template>
+
+<script>
+import AboutComponents from '@/components/AboutComponents.vue'
+export default {
+  components: {
+    AboutComponents,
+  },
+}
+</script>
 
 <style>
 @media (min-width: 1024px) {
@@ -11,5 +20,12 @@
     display: flex;
     align-items: center;
   }
+}
+
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
 }
 </style>
