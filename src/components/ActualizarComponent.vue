@@ -57,6 +57,7 @@ import { actualizarFachada } from '@/clients/MateriaClients'
 
 export default {
   name: 'ActualizarComponent',
+  inject: ['getToken'],
   data() {
     return {
       idActualizar: null,
@@ -72,13 +73,18 @@ export default {
   },
   methods: {
     async ejecutar() {
+      const token = this.getToken()
       const dataToSend = {
         ...this.form,
         fechaNacimiento: this.form.fechaNacimiento
           ? this.form.fechaNacimiento + 'T00:00:00'
           : '1994-12-12T00:00:00',
       }
-      this.resultado = await actualizarFachada(this.idActualizar, dataToSend)
+      this.resultado = await actualizarFachada(
+        this.idActualizar,
+        dataToSend,
+        token
+      )
     },
   },
 }

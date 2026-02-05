@@ -57,6 +57,7 @@ import { actualizarParcialFachada } from '@/clients/MateriaClients'
 
 export default {
   name: 'ActualizarParcialComponent',
+  inject: ['getToken'],
   data() {
     return {
       idActualizar: null,
@@ -72,9 +73,9 @@ export default {
   },
   methods: {
     async ejecutar() {
+      const token = this.getToken()
       const dataToSend = {}
 
-      // Solo agregar campos que tengan valor
       if (this.form.nombre && this.form.nombre.trim() !== '') {
         dataToSend.nombre = this.form.nombre
       }
@@ -91,13 +92,12 @@ export default {
         dataToSend.fechaNacimiento = this.form.fechaNacimiento + 'T00:00:00'
       }
 
-      // Validar que se haya ingresado al menos un campo
       if (Object.keys(dataToSend).length === 0) {
         alert('Debe ingresar al menos un campo para actualizar')
         return
       }
 
-      await actualizarParcialFachada(this.idActualizar, dataToSend)
+      await actualizarParcialFachada(this.idActualizar, dataToSend, token)
       this.resultado = true
     },
   },

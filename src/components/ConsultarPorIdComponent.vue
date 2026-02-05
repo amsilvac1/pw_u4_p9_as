@@ -49,6 +49,7 @@ import { consultarPorIdFachada } from '@/clients/MateriaClients'
 
 export default {
   name: 'ConsultarPorIdComponent',
+  inject: ['getToken'],
   data() {
     return {
       idBuscar: null,
@@ -57,7 +58,8 @@ export default {
   },
   methods: {
     async ejecutar() {
-      this.resultado = await consultarPorIdFachada(this.idBuscar)
+      const token = this.getToken()
+      this.resultado = await consultarPorIdFachada(this.idBuscar, token)
     },
   },
 }

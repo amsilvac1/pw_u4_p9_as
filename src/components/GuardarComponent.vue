@@ -46,6 +46,7 @@ import { guardarFachada } from '@/clients/MateriaClients'
 
 export default {
   name: 'GuardarComponent',
+  inject: ['getToken'],
   data() {
     return {
       form: {
@@ -60,13 +61,14 @@ export default {
   },
   methods: {
     async ejecutar() {
+      const token = this.getToken()
       const fecha = {
         ...this.form,
         fechaNacimiento: this.form.fechaNacimiento
           ? this.form.fechaNacimiento + 'T00:00:00'
           : null,
       }
-      this.resultado = await guardarFachada(fecha)
+      this.resultado = await guardarFachada(fecha, token)
       this.form = {
         nombre: '',
         apellido: '',
