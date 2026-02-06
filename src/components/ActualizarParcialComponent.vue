@@ -57,7 +57,6 @@ import { actualizarParcialFachada } from '@/clients/MateriaClients'
 
 export default {
   name: 'ActualizarParcialComponent',
-  inject: ['getToken'],
   data() {
     return {
       idActualizar: null,
@@ -73,7 +72,7 @@ export default {
   },
   methods: {
     async ejecutar() {
-      const token = this.getToken()
+      const token = localStorage.getItem('token')
       const dataToSend = {}
 
       if (this.form.nombre && this.form.nombre.trim() !== '') {

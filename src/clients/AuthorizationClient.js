@@ -1,12 +1,15 @@
 import axios from 'axios'
 
-const URL = 'http://localhost:8082/auth/token?usuario=admin&password=admin123'
-
-const obtenerToken = async () => {
-  const response = await axios.get(URL)
+const obtenerToken = async (usuario, password) => {
+  const response = await axios.get('http://localhost:8082/auth/token', {
+    params: {
+      usuario: usuario,
+      password: password,
+    },
+  })
   return response.data
 }
 
-export async function obtenerTokenFacade() {
-  return await obtenerToken()
+export async function obtenerTokenFacade(usuario, password) {
+  return await obtenerToken(usuario, password)
 }

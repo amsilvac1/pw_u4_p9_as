@@ -4,36 +4,59 @@
     <input v-model="usuario" type="text" placeholder="Usuario" />
     <input v-model="password" type="password" placeholder="Contraseña" />
     <button @click="login">Entrar</button>
+    <p v-if="mensaje" :class="{ error: esError }">{{ mensaje }}</p>
   </div>
 </template>
 
 <script>
+import { obtenerTokenFacade } from '@/clients/AuthorizationClient'
+
 export default {
   data() {
     return {
       usuario: '',
       password: '',
+      mensaje: '',
+      esError: false,
     }
   },
   methods: {
-    // Aquí podrías agregar métodos para manejar el login
-    login() {
-      //mandar a obtener el token
-      const TOKEN =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJtYXRyaWN1bGEtYXV0aCIsInN1YiI6ImFkbWluIiwiZ3JvdXBzIjpbImFkbWluIl0sImlhdCI6MTc3MDMzNjU0MSwiZXhwIjoxNzcwMzQwMTQxLCJqdGkiOiI4MzVlMmZmNi04YTQ4LTRkNWMtYjVlMC1jYTdiMTI0ZDg2ZWMifQ.kLoGatMB6iaLwROUTpasLrNOsm5w4v2JYbCVGJFymVhIxO_wLAOsCvHdcvkIX7LNKts_vsW_IRVcWL7nO4WXImp34k9E4njcTbX9O-dWSPiDYDSndFOsjZFWM9aOJihSSaOi_DuLc3ZPdzkkgKPZ4UTfnxHFCp-e-GU-kcYuc76JMBeMQwXnukWatp6ARcUNyudizOD7_s1s2Op6wKzSY98I5Z9L83mxgivPf6-7xnjdNnphyE71NOKXTJXRjiOnzGtf7Alllx2Gtkvg25boEQZjqnoizceKVvLwJ3VEC0Np6SbrKxiaMKChGtuggcmihIpdHDEAL4LaTQthsCAxog'
-      if (TOKEN != null) {
-        // Guardar el token en localStorage para usarlo en futuras solicitudes
-        localStorage.setItem('token', TOKEN)
-        localStorage.setItem('estaAutenticado', true)
+    async login() {
+      console.log('Intentando login con usuario:', this.usuario)
+
+      if (!this.usuario || !this.password) {
+        this.mensaje = 'Por favor ingrese usuario y contraseña'
+        this.esError = true
+        return
+      }
+
+      const tokenData = await obtenerTokenFacade(this.usuario, this.password)
+
+      console.log('Token recibido:', tokenData)
+
+      if (tokenData && tokenData.accessToken) {
+        console.log('✅ Login exitoso, guardando token')
+        localStorage.setItem('token', tokenData.accessToken)
+        localStorage.setItem('estaAutenticado', 'true')
+        this.mensaje = 'Login exitoso'
+        this.esError = false
+
+        setTimeout(() => {
+          this.$router.push({ name: 'consultarTodos' })
+        }, 1000)
       } else {
-        console.log('Error de autenticación')
+        console.log('❌ Error: Token no válido o credenciales incorrectas')
+        this.mensaje = 'Usuario o contraseña incorrectos'
+        this.esError = true
+        localStorage.removeItem('token')
+        localStorage.removeItem('estaAutenticado')
       }
     },
   },
 }
 </script>
 
-<style>
+<style scoped>
 .login {
   max-width: 300px;
   margin: auto;
@@ -64,5 +87,26 @@ button {
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
+}
+
+button:hover {
+  background-color: rgb(14, 110, 190);
+}
+
+p {
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0;
+}
+
+p.error {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+p:not(.error) {
+  background-color: #e8f5e9;
+  color: #2e7d32;
 }
 </style>

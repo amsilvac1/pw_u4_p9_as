@@ -39,7 +39,6 @@ import { consultarTodosFachada } from '@/clients/MateriaClients'
 
 export default {
   name: 'ConsultarTodosComponent',
-  inject: ['getToken'],
   data() {
     return {
       resultado: null,
@@ -47,7 +46,7 @@ export default {
   },
   methods: {
     async ejecutar() {
-      const token = this.getToken()
+      const token = localStorage.getItem('token')
       this.resultado = await consultarTodosFachada(token)
     },
   },

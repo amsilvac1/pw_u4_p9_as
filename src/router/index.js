@@ -5,22 +5,26 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/',
+      redirect: '/login',
+    },
+    {
       path: '/login',
       name: 'login',
       component: LoginView,
+      meta: { requiresAuth: false, esPublica: true },
     },
-
     {
       path: '/consultar-todos',
       name: 'consultarTodos',
       component: () => import('../components/ConsultarTodosComponent.vue'),
-      meta: { requiresAuth: false, esPublica: false },
+      meta: { requiresAuth: true, esPublica: false },
     },
     {
       path: '/consultar-por-id',
       name: 'consultarPorId',
       component: () => import('../components/ConsultarPorIdComponent.vue'),
-      meta: { requiresAuth: false, esPublica: false },
+      meta: { requiresAuth: true, esPublica: false },
     },
     {
       path: '/guardar',
@@ -49,20 +53,12 @@ const router = createRouter({
   ],
 })
 
-/*Configuración de guardianes de rutas
-  to = ruta a la que se quiere navegar
-   from = ruta desde la que se navega
-   next = función que permite continuar o cancelar la navegación
-*/
 router.beforeEach((to, from, next) => {
-  const estaAutenticado = localStorage.getItem('estaAtenticado')
+  const estaAutenticado = localStorage.getItem('estaAutenticado')
+
   if (to.meta.requiresAuth && !estaAutenticado) {
-    // le envio a una pagina de login o algo similar
-    console.log()
     next({ name: 'login' })
   } else {
-    //le dejo sin validación
-    console.log('Pase libre')
     next()
   }
 })

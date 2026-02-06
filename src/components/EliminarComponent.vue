@@ -35,7 +35,6 @@ import { eliminarFachada } from '@/clients/MateriaClients'
 
 export default {
   name: 'EliminarComponent',
-  inject: ['getToken'],
   data() {
     return {
       idEliminar: null,
@@ -45,7 +44,7 @@ export default {
   },
   methods: {
     async ejecutar() {
-      const token = this.getToken()
+      const token = localStorage.getItem('token')
       await eliminarFachada(this.idEliminar, token)
       this.idEliminado = this.idEliminar
       this.resultado = true
