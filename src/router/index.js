@@ -1,13 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import LoginView from '@/views/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      redirect: '/consultar-todos',
-      meta: { requiresAuth: false, esPublica: false },
+      path: '/login',
+      name: 'login',
+      component: LoginView,
     },
+
     {
       path: '/consultar-todos',
       name: 'consultarTodos',
@@ -53,9 +55,11 @@ const router = createRouter({
    next = función que permite continuar o cancelar la navegación
 */
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth) {
+  const estaAutenticado = localStorage.getItem('estaAtenticado')
+  if (to.meta.requiresAuth && !estaAutenticado) {
     // le envio a una pagina de login o algo similar
-    console.log('Redirije al login')
+    console.log()
+    next({ name: 'login' })
   } else {
     //le dejo sin validación
     console.log('Pase libre')
